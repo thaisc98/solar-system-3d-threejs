@@ -8,6 +8,22 @@ const pane = new Pane();
 // initialize the scene
 const scene = new THREE.Scene();
 
+// space background
+let stars = new Array(0);
+for(let i = 100; i < 10000; i++){
+  let x = THREE.MathUtils.randFloatSpread(2000);
+  let y = THREE.MathUtils.randFloatSpread(2000);
+  let z = THREE.MathUtils.randFloatSpread(2000);
+  stars.push(x,y,z);
+}
+const startsGeometry = new THREE.BufferGeometry();
+startsGeometry.setAttribute(
+  "position", new THREE.Float32BufferAttribute(stars,3)
+);
+const startsMaterial = new THREE.PointsMaterial({color: 'white'});
+const startField = new THREE.Points(startsGeometry, startsMaterial);
+scene.add(startField);
+
 // start
 const sphereGeometry = new THREE.SphereGeometry(1,32,32);
 
