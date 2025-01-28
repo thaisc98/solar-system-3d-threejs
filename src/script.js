@@ -59,6 +59,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 //instantiate the controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
+controls.maxDistance = 200;
+controls.minDistance = 20;
 //controls.autoRotate = true;
 
 window.addEventListener("resize", () => {
@@ -67,13 +69,21 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// initialize a clock
+const clock = new THREE.Clock()
+
 // render the scene
 const renderloop = () => {
-  // group.children.forEach((child) => {
-  //   if( child instanceof THREE.Mesh){
-  //     child.rotation.y += 0.01;
-  //   }
-  // })
+  const elapsedTime = clock.getElapsedTime();
+
+  // animation
+  earth.rotation.y += 0.01;
+  earth.position.x = Math.sin(elapsedTime) * 10;
+  earth.position.z = Math.cos(elapsedTime) * 10;
+
+  moon.position.x = Math.sin(elapsedTime) * 2;
+  moon.position.z = Math.cos(elapsedTime) * 2;
+
   controls.update();
   renderer.render(scene, camera);
   window.requestAnimationFrame(renderloop);
