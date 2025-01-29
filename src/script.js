@@ -9,23 +9,25 @@ const pane = new Pane();
 const scene = new THREE.Scene();
 
 // space background
-let stars = new Array(0);
-for(let i = 100; i < 10000; i++){
-  let x = THREE.MathUtils.randFloatSpread(2000);
-  let y = THREE.MathUtils.randFloatSpread(2000);
-  let z = THREE.MathUtils.randFloatSpread(2000);
-  stars.push(x,y,z);
-}
-const startsGeometry = new THREE.BufferGeometry();
-startsGeometry.setAttribute(
-  "position", new THREE.Float32BufferAttribute(stars,3)
-);
-const startsMaterial = new THREE.PointsMaterial({color: 'white'});
-const startField = new THREE.Points(startsGeometry, startsMaterial);
-scene.add(startField);
+// let stars = new Array(0);
+// for(let i = 100; i < 10000; i++){
+//   let x = THREE.MathUtils.randFloatSpread(2000);
+//   let y = THREE.MathUtils.randFloatSpread(2000);
+//   let z = THREE.MathUtils.randFloatSpread(2000);
+//   stars.push(x,y,z);
+// }
+// const startsGeometry = new THREE.BufferGeometry();
+// startsGeometry.setAttribute(
+//   "position", new THREE.Float32BufferAttribute(stars,3)
+// );
+// const startsMaterial = new THREE.PointsMaterial({color: 'white'});
+// const startField = new THREE.Points(startsGeometry, startsMaterial);
+// scene.add(startField);
 
 // textureLoader
 const textureLoader = new THREE.TextureLoader();
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+cubeTextureLoader.setPath('/textures/cubeMap/');
 
 // adding textures
 const sunTexture = textureLoader.load('/textures/2k_sun.jpg')
@@ -34,6 +36,18 @@ const venusTexture = textureLoader.load('/textures/2k_venus_surface.jpg')
 const earthTexture = textureLoader.load('/textures/2k_earth_daymap.jpg')
 const marsTexture = textureLoader.load('/textures/2k_mars.jpg')
 const moonTexture = textureLoader.load('/textures/2k_moon.jpg')
+
+const backgroundCubeMap = cubeTextureLoader.load(
+  [
+  'px.png',
+  'nx.png',
+  'py.png',
+	'ny.png',
+  'pz.png',
+	'nz.png'
+]);
+
+scene.background = backgroundCubeMap;
 
 // add materials
 const mercuryMaterial = new THREE.MeshStandardMaterial({
@@ -160,8 +174,11 @@ const planetMeshes = planets.map((planet) => {
 console.log(planetMeshes);
 
 // add lights
-const ambientLight = new THREE.AmbientLight(0xffffff,0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff,0.05);
 scene.add(ambientLight)
+
+const pointLight = new THREE.PointLight(0xffcc6c,200);
+scene.add(pointLight);
 
 // initialize the camera
 const camera = new THREE.PerspectiveCamera(
@@ -211,14 +228,6 @@ const renderloop = () => {
       moon.position.z = Math.cos(moon.rotation.y) * planets[planetIndex].moons[moonIndex].distance
     })
   })
-
-
-  // earth.rotation.y += 0.01;
-  // earth.position.x = Math.sin(elapsedTime) * 10;
-  // earth.position.z = Math.cos(elapsedTime) * 10;
-
-  // moon.position.x = Math.sin(elapsedTime) * 2;
-  // moon.position.z = Math.cos(elapsedTime) * 2;
 
   controls.update();
   renderer.render(scene, camera);
