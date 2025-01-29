@@ -157,7 +157,7 @@ const planetMeshes = planets.map((planet) => {
   return planetMesh;
 })
 
-console.log(planetMeshes)
+console.log(planetMeshes);
 
 // add lights
 const ambientLight = new THREE.AmbientLight(0xffffff,0.5);
