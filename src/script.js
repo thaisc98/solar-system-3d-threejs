@@ -194,14 +194,25 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// initialize a clock
-const clock = new THREE.Clock()
 
 // render the scene
 const renderloop = () => {
-  const elapsedTime = clock.getElapsedTime();
 
-  // // animation
+  // animation
+  sun.rotation.y += 0.000460;
+
+  planetMeshes.forEach((planet, planetIndex) => {
+    planet.rotation.y += planets[planetIndex].speed
+    planet.position.x = Math.sin(planet.rotation.y) * planets[planetIndex].distance;
+    planet.position.z = Math.cos(planet.rotation.y) * planets[planetIndex].distance;
+    planet.children.forEach((moon, moonIndex) => {
+      moon.rotation.y += planets[planetIndex].moons[moonIndex].speed
+      moon.position.x = Math.sin(moon.rotation.y) * planets[planetIndex].moons[moonIndex].distance
+      moon.position.z = Math.cos(moon.rotation.y) * planets[planetIndex].moons[moonIndex].distance
+    })
+  })
+
+
   // earth.rotation.y += 0.01;
   // earth.position.x = Math.sin(elapsedTime) * 10;
   // earth.position.z = Math.cos(elapsedTime) * 10;
