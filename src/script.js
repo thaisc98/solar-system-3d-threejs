@@ -24,11 +24,43 @@ const startsMaterial = new THREE.PointsMaterial({color: 'white'});
 const startField = new THREE.Points(startsGeometry, startsMaterial);
 scene.add(startField);
 
+// textureLoader
+const textureLoader = new THREE.TextureLoader();
+
+// adding textures
+const sunTexture = textureLoader.load('/textures/2k_sun.jpg')
+const mercuryTexture = textureLoader.load('/textures/2k_mercury.jpg')
+const venusTexture = textureLoader.load('/textures/2k_venus_surface.jpg')
+const earthTexture = textureLoader.load('/textures/2k_earth_daymap.jpg')
+const marsTexture = textureLoader.load('/textures/2k_mars.jpg')
+const moonTexture = textureLoader.load('/textures/2k_moon.jpg')
+
+// add materials
+const mercuryMaterial = new THREE.MeshStandardMaterial({
+  map: mercuryTexture
+});
+
+const venusMaterial = new THREE.MeshStandardMaterial({
+  map: venusTexture
+});
+
+const earthMaterial = new THREE.MeshStandardMaterial({
+  map: earthTexture
+});
+
+const marsMaterial = new THREE.MeshStandardMaterial({
+  map: marsTexture
+});
+
+const moonMaterial = new THREE.MeshStandardMaterial({
+  map: moonTexture
+});
+
 // start
 const sphereGeometry = new THREE.SphereGeometry(1,32,32);
 
 const sunMaterial = new THREE.MeshBasicMaterial({
-  color: 0xfff700
+ map: sunTexture
 })
 
 const sun = new THREE.Mesh(sphereGeometry, sunMaterial);
@@ -36,23 +68,100 @@ sun.scale.setScalar(5);
 
 scene.add(sun);
 
-const earthMaterial = new THREE.MeshBasicMaterial({
-  color: 'blue'
+const planets = [
+  {
+    name: "Mercury",
+    radius: 0.5,
+    distance: 10,
+    speed: 0.01,
+    material: mercuryMaterial,
+    moons: [],
+  },
+  {
+    name: "Venus",
+    radius: 0.8,
+    distance: 15,
+    speed: 0.007,
+    material: venusMaterial,
+    moons: [],
+  },
+  {
+    name: 'Earth',
+    radius: 1,
+    distance: 20,
+    speed: 0.005,
+    material: earthMaterial,
+    moons: [
+      {
+        name: 'Moon',
+        radius: 0.3,
+        distance: 2,
+        speed: 0.015,
+      }
+    ]
+  },
+  {
+    name: "Mars",
+    radius: 0.7,
+    distance: 25,
+    speed: 0.003,
+    material: marsMaterial,
+    moons: [
+      {
+        name: "Phobos",
+        radius: 0.1,
+        distance: 2,
+        speed: 0.02,
+      },
+      {
+        name: "Deimos",
+        radius: 0.2,
+        distance: 3,
+        speed: 0.015,
+        color: 0xffffff,
+      },
+    ],
+  },
+]
+
+const createPlanet = (planet) => {
+  // create the mesh and add it to the scene
+  const planetMesh = new THREE.Mesh(sphereGeometry, planet.material)
+
+  // set the scale
+  planetMesh.scale.setScalar(planet.radius)
+  planetMesh.position.x = planet.distance
+
+  return planetMesh
+}
+
+const createMoon = (moon) => {
+  const moonMesh = new THREE.Mesh(sphereGeometry, moonMaterial);
+  moonMesh.scale.setScalar(moon.radius);
+  moonMesh.position.x = moon.distance;
+  return moonMesh
+
+}
+
+const planetMeshes = planets.map((planet) => {
+  const planetMesh = createPlanet(planet);
+
+  scene.add(planetMesh);
+
+  //loop thought each moon and create a the moon
+  planet.moons.forEach((moon) => {
+    const moonMesh = createMoon(moon);
+    planetMesh.add(moonMesh);
+  })
+
+  return planetMesh;
 })
 
-const earth = new THREE.Mesh(sphereGeometry, earthMaterial);
-earth.position.x = 10;
+console.log(planetMeshes)
 
-scene.add(earth);
-
-const moonMaterial = new THREE.MeshBasicMaterial({
-  color: '#c9c9c9'
-})
-
-const moon = new THREE.Mesh(sphereGeometry, moonMaterial);
-moon.scale.setScalar(0.3);
-moon.position.x = 2
-earth.add(moon);
+// add lights
+const ambientLight = new THREE.AmbientLight(0xffffff,0.5);
+scene.add(ambientLight)
 
 // initialize the camera
 const camera = new THREE.PerspectiveCamera(
@@ -92,13 +201,13 @@ const clock = new THREE.Clock()
 const renderloop = () => {
   const elapsedTime = clock.getElapsedTime();
 
-  // animation
-  earth.rotation.y += 0.01;
-  earth.position.x = Math.sin(elapsedTime) * 10;
-  earth.position.z = Math.cos(elapsedTime) * 10;
+  // // animation
+  // earth.rotation.y += 0.01;
+  // earth.position.x = Math.sin(elapsedTime) * 10;
+  // earth.position.z = Math.cos(elapsedTime) * 10;
 
-  moon.position.x = Math.sin(elapsedTime) * 2;
-  moon.position.z = Math.cos(elapsedTime) * 2;
+  // moon.position.x = Math.sin(elapsedTime) * 2;
+  // moon.position.z = Math.cos(elapsedTime) * 2;
 
   controls.update();
   renderer.render(scene, camera);
