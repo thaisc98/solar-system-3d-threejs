@@ -1,10 +1,14 @@
 # Solar System 3D with ThreeJS
 
-// TODO
+A 3D visualization of the solar system built using ThreeJS.
 
 ## Features
 
-// TODO
+- Realistic 3D models of the planets with accurate textures
+- Orbit paths for planets around the Sun
+- Camera controls for zooming, panning, and rotating the scene
+- Lighting and shadows for a more immersive experience
+- Adjustable simulation light using Tweakpane
 
 ## Prerequisites
 
@@ -33,7 +37,16 @@ npm run dev
 
 ## Project Structure
 
-//TODO
+```plaintext
+├── src                             # Source files
+│   ├── index.html                  # HTML entry point
+│   ├── styles.css                  # Styling
+│   ├── script.js                   # JavaScript entry point (Three.js code)
+├── static/textures                 # Static Planets Textures files
+├── package.json                    # npm configuration
+├── readme.md                       # Project documentation
+├── vite.config.js                  # Vite configuration
+```
 
 ## Deployment
 
@@ -50,6 +63,7 @@ Then, serve the contents of the `dist` folder using any static site hosting serv
 - [Three.js Documentation](https://threejs.org/docs/)
 - [Three.js Examples](https://threejs.org/examples/)
 - [Tweakpane](https://tweakpane.github.io/)
+- [Solar System Textures](https://www.solarsystemscope.com/textures/)
 
 ## License
 
